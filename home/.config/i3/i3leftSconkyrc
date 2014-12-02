@@ -1,0 +1,21 @@
+# -*-eval: (rainbow-mode 1);-*-
+background no
+out_to_console yes
+out_to_x no
+update_interval 1
+cpu_avg_samples 2
+net_avg_samples 4
+total_run_times 0
+short_units yes
+pad_percents 3
+override_utf8_locale yes
+TEXT
+,[${if_mpd_playing}{"full_text": "${mpd_artist 15}","color": "\#A24229"},{"full_text": "${mpd_album 15} $mpd_bar ${mpd_title 25}","color": "\#A949A9"},$endif
+{"full_text": " ❤ $acpitemp°C [$cpu%] ","color": "\#DC322F"},
+{"full_text": " ≣ $mem ", "color":"\#B58900"},
+{"full_text": "🎮 ${execi 60 nvidia-settings -query '[gpu:0]/GPUCurrentProcessorClockFreqs' | perl -ne 'print $1 if /GPUCurrentProcessorClockFreqs.*?: (\d+)./;'}Mhz [${execi 60 nvidia-settings -query '[gpu:0]/GPUCoreTemp' | perl -ne 'print $1 if /GPUCoreTemp.*?: (\d+)./;'}°C] ${execi 5 nvidia-settings -q [fan:0]/GPUCurrentFanSpeed -t}% ", "color":"\#84A3FF"},
+${if_up eno1}{"full_text": " ≈ eno1 ↓${downspeed eno1} ↑${upspeed eno1}","color":"\#33CC99","min_width" : "  eno1 9999MBS 9999MBS "},$endif
+{"full_text": " ♪ [$mpd_vol%] ", "color":"\#268BD2"},
+{"full_text": " ${time %a %d %b} ${time %H:%M}","color":"\#00ff00"}
+]
+

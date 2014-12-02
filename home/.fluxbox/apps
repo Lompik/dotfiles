@@ -1,0 +1,82 @@
+[group]  (workspace=[current])
+ [app] (name=emacs) (class=Emacs)
+[end]
+[group]  (workspace=[current])
+ [app] (class=X-terminal-emulator)
+ [app] (name=terminator) (class=Terminator)
+ [app] (class=x-terminal-emulator)
+  [Position]	(CENTER)	{0 0}
+  [Layer]	{8}
+[end]
+[group]  (workspace=[current])
+ [app] (class=mrxvt)
+ [app] (@WM_COMMAND=.*mrxvt)
+  [Position]	(CENTER)	{0 0}
+  [Layer]	{8}
+[end]
+[group]  (workspace=[current])
+ [app] (class=URxvt)
+  [Position]	(CENTER)	{0 0}
+  [Layer]	{8}
+[end]
+[group]  (workspace=[current])
+ [app] (name=mupdf) (class=MuPDF)
+ [app] (class=Gnuplot)
+  [Layer]	{10}
+[end]
+[group]  (workspace=[current])
+ [app] (name=r_x11) (class=R_x11)
+  [Layer]	{10}
+[end]
+[app] (class=FbRun)
+  [Position]	(CENTER)	{0 0}
+  [Layer]	{2}
+[end]
+[app] (name=emacs) (class=Emacs)
+  [Tab]		{yes}
+[end]
+[app] (name=terminator) (class=Terminator)
+  [Tab]		{yes}
+[end]
+[app] (class=mrxvt)
+  [Tab]		{yes}
+  [Alpha]	{255 125}
+[end]
+[app] (class=URxvt)
+  [Tab]		{yes}
+  [Alpha]	{255 125}
+[end]
+[app] (name=mupdf) (class=MuPDF)
+  [Tab]		{yes}
+  [Layer]	{6}
+[end]
+[app] (name=r.x11) (class=R.x11)
+  [Tab]		{yes}
+  [Layer]	{6}
+  [Alpha]	{255 200}
+[end]
+[app] (class=Audacious) (class=Exaile) (class=Deadbeef)
+  [Workspace]	{3}
+  [Jump]	{no}
+[end]
+[app] (class=Chromium-browser) 
+  [Workspace]	{2}
+  [Jump]	{no}
+[end]
+[app] (class=Conkeror)
+  [Workspace]	{1}
+  [Jump]	{no}
+[end]
+[app] (class=mplayer2)
+  [Layer]	{6}
+  [Alpha]	{254}
+[end]
+[app] (class=xfreerdp)
+  [Layer]	{10}
+[end]
+[app] (name=Browser) (class=Firefox) (role=Preferences)
+  [Layer]	{6}
+[end]
+[app] (name=Steam) (class=Steam)
+  [Layer]	{6}
+[end]

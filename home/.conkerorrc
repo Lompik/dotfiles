@@ -1,0 +1,949 @@
+// -*-mode:js; eval: (conkeror-minor-mode 1);eval: (rainbow-mode 1)-*-
+
+interactive("browser-object-xpath",
+    "A prefix command to specify that the following command operate "+
+    "on objects of type: prompted xpath.",
+    function (I) {
+        var expr = yield I.buffer.window.minibuffer.read(
+            $prompt = "xpath expression:",
+            $history = "xpath-expression");
+        I.browser_object =
+            new browser_object_class("xpath-generated", null,
+                function (I, prompt) {
+                    var result = yield I.buffer.window.minibuffer.read_hinted_element(
+                        $buffer = I.buffer,
+                        $prompt = prompt,
+                        $hint_xpath_expression = expr);
+                    yield co_return(result);
+                });
+    },
+    $prefix = true);
+define_key(content_buffer_normal_keymap, "C-x /", "browser-object-xpath");
+
+//require("gmail");
+require("page-modes/reddit.js");
+require("stackexchange");
+//require("wikipedia");
+require("page-modes/google-search-results.js");
+google_search_bind_number_shortcuts();
+
+read_url_handler_list = [read_url_make_default_webjump_handler("google")];
+
+external_content_handlers =
+    {
+        "*": getenv("EDITOR"),
+        text: { "*": getenv("EDITOR") },
+        image: { "*": "display" },
+        application: {
+            pdf: "mupdf",
+            postscript: "gv",
+            "x-dvi": "xdvi"
+        }
+    };
+//require("key-kill"); // part of Conkeror since 0341e79
+//key_kill_mode.test.push(build_url_regexp($domain = "github"));
+//key_kill_mode.test.push(build_url_regexp($domain = "twitter"));
+//key_kill_mode.test.push(build_url_regexp($domain = "stackexchange"));
+//key_kill_mode.test.push(/\/\/.*slashdot\.org\//);
+
+interactive("follow", null,
+    alternates(follow, follow_new_buffer_background, follow_new_buffer ),
+    $browser_object = browser_object_links);
+
+define_key(content_buffer_normal_keymap, "f", "follow");
+define_key(default_global_keymap, "C-x C-f", "find-url");
+
+define_key(default_global_keymap, "s-[", "buffer-previous");
+define_key(default_global_keymap, "s-]", "buffer-next");
+
+interactive("DomNodeCopy", null,
+    alternates(copy_text, copy_text_append),
+    $browser_object = browser_object_dom_node);
+
+define_key(default_global_keymap, "C", "DomNodeCopy");
+
+function darken_page (I) {
+    var styles='* { background: #3F3F3F !important; color: grey !important; }'+
+        ':link, :link * { color: #4986dd !important; }'+
+        ':visited, :visited * { color: #d75047 !important; }';
+    var document = I.buffer.document;
+    var newSS=document.createElement('link');
+    newSS.rel='stylesheet';
+    newSS.href='data:text/css,'+escape(styles);
+    document.getElementsByTagName("head")[0].appendChild(newSS);
+}
+
+register_user_stylesheet(make_css_data_uri(["@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul); browser { background-color: #3F3F3F !important; }"]));
+
+// darken apod
+user_pref("browser.display.use_system_colors", false);
+user_pref("browser.active_color", "#cfbfaf");
+user_pref("browser.anchor_color", "#93b3a3");
+user_pref("browser.display.background_color", "#3F3F3F");
+user_pref("browser.display.foreground_color", "#CCCCCC");
+user_pref("browser.visited_color", "#ffcfaf");
+
+interactive("colors-toggle", "toggle between document and forced colors",
+    function (I) {
+        var p = "browser.display.use_document_colors";
+        if (get_pref(p))
+            session_pref(p, false);
+        else session_pref(p, true);
+    });
+define_key(content_buffer_normal_keymap, "f6", "colors-toggle");
+
+
+hint_background_color="#E0C0C0";
+var global_css_registered=false;
+
+//register_user_stylesheet('file:///home/$USER/.conkeror.css');
+function toggle_global_css(I){
+    global_css_registered=global_css_registered ? false : true;
+    if(global_css_registered){
+        register_user_stylesheet('file:///home/lompik/.config/conkeror/styleInput.css');
+    }else{
+        unregister_user_stylesheet('file:///home/lompik/.config/conkeror/styleInput.css');
+    }
+}
+interactive("toggle-global-css", "Toggle global.css", toggle_global_css);
+define_key(default_global_keymap, "C-t", "toggle-global-css");
+
+//register_user_stylesheet(
+//    make_css_data_uri(["* {background: #3F3F3F !important; color: grey !important;}",
+//                       ":link, :link * {color: #93b3a3 !important;}", 
+//                       ":visited, :visited * {color: #d75047 !important;}"]
+//                      ));
+
+
+register_user_stylesheet(
+    "data:text/css," +
+        escape(
+            "@namespace url(\"http://www.w3.org/1999/xhtml\");\n" +
+                "span.__conkeror_hint {\n"+
+                "  font-size: 22px !important;\n"+
+                "  line-height: 22px !important;\n"+
+                "  background-color: #FFFFFF !important;\n"+
+                "}"));
+
+define_key(content_buffer_normal_keymap, "C-d", "darken-page");
+define_key(content_buffer_normal_keymap, "/", "isearch-forward");
+
+zoom_levels = [ 1, 10, 25, 50, 75, 90, 100, 110,
+                120, 125, 130, 140, 150, 200, 300, 500, 1000, 2000 ];
+
+register_user_stylesheet(
+    make_css_data_uri(
+        ['.k { font-weight: bold !important; }', // keyword
+         'a, h1, code, pre {text-shadow: 0px 0px 0px  black !important; }',
+         '.nv { color: #aaa !important; } ', // function name/variable name
+         '.s { color: #95e454 !important; } ', // string
+         '.c1 { color: #99968b !important; '+
+         'font-style: normal !important; }', // comment
+         'td.blob-code.blob-code-addition { color: #1AFF84 !important; }', // inserted line
+         'td.blob-code.blob-code-deletion { color: #ff0080 !important; }', // inserted line
+        ], $domains = "github.com"));
+
+register_user_stylesheet(
+    make_css_data_uri(
+        ['h3.r >a {text-shadow: 0px 0px 0px  black !important;color:  #A4C3a4 !important; }',
+         'h3.r >a:hover {text-shadow: 0px 0px 0px  black !important;color:  #905040 !important; }'
+        ], $domains = "google.com"));
+unregister_user_stylesheet(
+    make_css_data_uri(
+        ['h3.r >a {text-shadow: 0px 0px 0px  black !important;color:  #A4C3a4 !important; }',
+         'h3.r >a:hover {text-shadow: 0px 0px 0px  black !important;color:  #905040 !important; }'
+        ], $domains = "google.com"));
+
+
+var test= "temp";
+
+function my_zoom_set (buffer) {
+    browser_zoom_set(buffer, true, 130);
+    browser_zoom_set(buffer, false, 130);
+}
+add_hook('create_buffer_late_hook', my_zoom_set);
+
+interactive("darken-page", "Darken the page in an attempt to save your eyes.",
+    darken_page);
+
+
+theme_load_paths.unshift("~/.config/conkeror/themes");
+theme_unload("default");
+theme_load("conkeror-theme-zenburn");
+
+
+require("clicks-in-new-buffer.js");
+// Set to either OPEN_NEW_BUFFER or OPEN_NEW_BUFFER_BACKGROUND
+clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND; // Now buffers open in background.
+
+require("new-tabs.js");
+
+interactive("duplicate-buffer", "Duplicate buffer",
+    function (I) {
+        browser_object_follow(I.buffer, OPEN_NEW_BUFFER, I.buffer.current_uri.spec);
+    });
+define_key(content_buffer_normal_keymap, "C-c d", "duplicate-buffer");
+
+session_pref("font.minimum-size.x-western", 18);
+
+url_remoting_fn = load_url_in_new_buffer;
+
+url_completion_use_history = true;
+url_completion_use_bookmarks = true;
+url_completion_use_webjumps = true;
+minibuffer_auto_complete_default = true;
+
+require("session.js");
+session_auto_save_auto_load = true;
+
+session_pref('browser.history_expire_days', 30);
+/*
+  session_pref("signon.rememberSignons, true);
+  session_pref("signon.expireMasterPassword", false);
+  session_pref("signon.SignonFileName", "signons.txt");
+  Components.classes['@mozilla.org/login-manager;1']
+  .getService(Components.interfaces.nsILoginManager);
+*/
+require("mode-line.js");
+
+add_hook("mode_line_hook", mode_line_adder(clock_widget),true);
+
+add_hook("mode_line_hook", mode_line_adder(buffer_icon_widget), true);
+add_hook("mode_line_hook", mode_line_adder(loading_count_widget), true);
+add_hook("mode_line_hook", mode_line_adder(buffer_count_widget), true);
+add_hook("mode_line_hook", mode_line_adder(zoom_widget));
+/*add_hook("mode_line_hook", mode_line_adder(downloads_status_widget));*/
+
+require("favicon.js");
+add_hook("mode_line_hook", mode_line_adder(buffer_icon_widget), true);
+read_buffer_show_icons = true;
+
+hints_display_url_panel = true;
+
+hints_minibuffer_annotation_mode(true);
+
+hints_auto_exit_delay = 250;
+hints_ambiguous_auto_exit_delay = 700;
+
+hint_digits="123456789";
+
+cwd = get_home_directory();
+cwd = make_file("/home/lompik/Downloads");
+
+download_buffer_automatic_open_target=OPEN_NEW_BUFFER_BACKGROUND;
+
+content_handlers.set("application/pdf", content_handler_open_default_viewer);
+external_content_handlers.set("application/pdf", "mupdf");
+
+external_content_handlers.set(
+    "application/vnd.ms-excel",
+    "libreoffice"
+);
+external_content_handlers.set(
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "libreoffice"
+);
+external_content_handlers.set(
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "libreoffice"
+);
+external_content_handlers.set(
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "libreoffice"
+);
+
+/*set_protocol_handler("mailto", make_file("~/bin/mail/emacs-mailto-handler.sh"));
+ */
+set_protocol_handler("magnet", find_file_in_path("transmission-gtk"));
+
+/*content_handlers.set("application/x-bittorrent", content_handler_open);
+
+  external_content_handlers.set("application/x-bittorrent", "transmission-gtk");
+*/
+
+editor_shell_command="emacsclient -ca emacs";
+view_source_use_external_editor = true;
+
+session_pref('extensions.checkCompatibility', false);
+session_pref("xpinstall.whitelist.required", false);
+user_pref("extensions.checkUpdateSecurity", true);
+
+// define_variable("firebug_url",
+//     "http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js");
+
+// function firebug (I) {
+//     var doc = I.buffer.document;
+//     var script = doc.createElement('script');
+//     script.setAttribute('type', 'text/javascript');
+//     script.setAttribute('src', firebug_url);
+//     script.setAttribute('onload', 'firebug.init();');
+//     doc.body.appendChild(script);
+// }
+// interactive("firebug", "open firebug lite", firebug);
+
+
+var firebug_lite = (function () {
+
+    var STABLE = "https://getfirebug.com/firebug-lite.js",
+        DEBUG  = "https://getfirebug.com/firebug-lite-debug.js",
+        BETA   = "https://getfirebug.com/firebug-lite-beta.js";
+
+    var init_user_variables = function () {
+        define_variable("firebug_lite_debug", false,
+    "Toggle firebug lite debug statements");
+        define_variable("firebug_lite_channel", "stable",
+    "Firebug lite distribution channel. Options: stable, debug, beta." +
+    "May be overwritten by firebug_lite_custom_link");
+        define_variable("firebug_lite_custom_link", "",
+    "Location of firebug lite code");
+        define_variable("firebug_lite_start_opened", true,
+    "If true, firebug lite panel will open as soon as extension is run.");
+    };
+
+    var init_commands = function () {
+        interactive("firebug4", "Open firebug lite", firebug_lite.run);
+    };
+
+    var init_keybinds = function () {
+        define_key(content_buffer_normal_keymap, "f12", "firebug");
+    };
+
+    var get_link = function () {
+        var link = "";
+        if (firebug_lite_custom_link != "") {
+            link = firebug_lite_custom_link;
+        } else {
+            switch (firebug_lite_channel) {
+            case "stable":
+                link = STABLE;
+                break;
+            case "debug":
+                link = DEBUG;
+                break;
+            case "beta":
+                link = BETA;
+                break;
+            }
+        }
+        if (!link) {
+            throw interactive_error("Invalid firebug lite link");
+        }
+        return link + get_options();
+    };
+
+    var get_options = function () {
+        var options = [];
+        if (firebug_lite_start_opened)
+            options.push("startOpened");
+        if (options.length > 0)
+            return "#" + options.join(",");
+        else
+            return "";
+    };
+
+    var run = function (I) {
+        var doc = I.buffer.document;
+        var script = doc.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        script.setAttribute('src', get_link());
+        doc.body.appendChild(script);
+    };
+
+    var log = function (msg) {
+        if (firebug_lite_debug)
+            dumpln("[firebug-lite] " + msg);
+    };
+
+    return {
+        init: function () {
+            init_user_variables();
+            init_commands();
+            init_keybinds();
+        },
+
+        run: function (I) {
+            run(I);
+        }
+    };
+
+})();
+
+firebug_lite.init();
+
+
+interactive("modi", "The Mouseover DOM Inspector, or MODI for short, is a favelet (also known as a bookmarklet)"
+    + " that allows you to view and manipulate the DOM of a web page simply "
+    + "by mousing around the document (http://slayeroffice.com/tools/modi/v2.0/modi_help.html).",
+    function(I) {
+        z=I.buffer.document.body.appendChild(I.buffer.document.createElement('script'));
+        z.language='javascript';
+        z.type='text/javascript';
+        z.src='http://slayeroffice.com/tools/modi/v2.0/modi_v2.0.js';
+        z.id='modi';
+    });
+
+if ('@eff.org/https-everywhere;1' in Cc) {
+    interactive("https-everywhere-options-dialog",
+    "Open the HTTPS Everywhere options dialog.",
+    function (I) {
+        window_watcher.openWindow(
+            null, "chrome://https-everywhere/content/preferences.xul",
+            "", "chrome,titlebar,toolbar,centerscreen,resizable", null);
+    });
+}
+
+require("adblockplus");
+
+// select text and google it. See also "**c" for selecting text
+interactive("search-clipboard-contents",
+    "Search in Google the content of the X clipboard (the selected text)",
+    "find-url",
+    $browser_object=
+    function(I) {
+        return "g "+ read_from_x_primary_selection();
+    }
+    );
+interactive("search-clipboard-contents-doublequoted",
+    "Search in Google the content of the X clipboard (the selected text) as a fixed string",
+    "find-url",
+    $browser_object=
+    function(I) {
+        return "g \""+ read_from_x_primary_selection()+"\"";
+    }
+    );
+define_key(content_buffer_normal_keymap, "C-c y", "search-clipboard-contents");
+define_key(content_buffer_normal_keymap, "C-c Y", "search-clipboard-contents-doublequoted");
+
+
+define_browser_object_class(
+    "history-url", null, 
+    function (I, prompt) {
+        check_buffer (I.buffer, content_buffer);
+        var result = yield I.buffer.window.minibuffer.read_url(
+            $prompt = prompt,  $use_webjumps = false, $use_history = true, $use_bookmarks = false);
+        yield co_return (result);
+    });
+
+interactive("find-url-from-history",
+    "Find a page from history in the current buffer",
+    "find-url",
+    $browser_object = browser_object_history_url);
+
+interactive("find-url-from-history-new-buffer",
+    "Find a page from history in the current buffer",
+    "find-url-new-buffer",
+    $browser_object = browser_object_history_url);
+
+define_key(content_buffer_normal_keymap, "h", "find-url-from-history-new-buffer");
+define_key(content_buffer_normal_keymap, "H", "find-url-from-history");
+
+define_webjump("python2", "http://docs.python.org/search.html?q=%s");
+define_webjump("python3", "http://docs.python.org/py3k/search.html?q=%s",
+    $alternative="http://docs.python.org/3/library");
+define_webjump("stackoverflow","http://stackoverflow.com/search?q=%s", $alternative="http://stackoverflow.com");
+define_webjump("archwiki", "https://wiki.archlinux.org/index.php?search=%s",
+    $alternative="http://www.archlinux.org");
+
+// selection searches
+function create_selection_search(webjump, key) {
+    interactive(
+    "internet-search-" + webjump,
+    "Search for selected string with " + webjump,
+    function (I) {
+        var term;
+        if (I.buffer.top_frame.getSelection() == "")
+            term = yield I.minibuffer.read_url($prompt = "Search with " + webjump + ":",
+                                               $select = false,
+                                               $initial_value = webjump + " ");
+        else
+            term = webjump + " " + I.buffer.top_frame.getSelection();
+        browser_object_follow(I.buffer, OPEN_NEW_BUFFER, term);
+    });
+    define_key(content_buffer_normal_keymap, key, "internet-search-" + webjump);
+
+    interactive(
+    "internet-search-" + webjump + "-prompted",
+    "Search for a string with " + webjump,
+    function (I) {
+        var term = yield I.minibuffer.read_url($prompt = "Search with " + webjump + ":",
+                                               $select = false,
+                                               $initial_value = webjump + " ");
+        browser_object_follow(I.buffer, OPEN_NEW_BUFFER, term);
+    });
+}
+
+create_selection_search("google"        , "M-S G");
+//create_selection_search("duckduckgo"    , "M-S d");
+create_selection_search("github"        , "M-S g");
+create_selection_search("conkerorwiki"      , "M-S c");
+//create_selection_search("emacswiki"     , "M-S e");
+create_selection_search("archwiki"      , "M-S a");
+create_selection_search("arch-package"  , "M-S A");
+//create_selection_search("wikipedia-en"  , "M-S w e");
+//create_selection_search("wikipedia-ru"  , "M-S w r");
+//create_selection_search("multitran"     , "M-S M");
+//create_selection_search("mana"          , "M-S m");
+//create_selection_search("ip"            , "M-S i");
+//create_selection_search("yandex"        , "M-S y");
+//create_selection_search("youtube"       , "M-S Y");
+create_selection_search("stackoverflow" , "M-S s");
+create_selection_search("python3"       , "M-S p");
+
+// https://github.com/alezost/conkerorrc
+
+define_key(hint_keymap, "C-.", "hints-previous");
+define_key(hint_keymap, "M-.", "hints-previous");
+define_key(hint_keymap, "C-e", "hints-next");
+define_key(hint_keymap, "M-e", "hints-next");
+
+define_webjump("arch/forums", "http://bbs.archlinux.org");
+define_webjump("arch/wiki", "http://wiki.archlinux.org/index.php?search=%s");
+define_webjump("arch/aur", "http://aur.archlinux.org/packages.php?O=0&K=%s");
+define_webjump("arch/packages",
+    "https://www.archlinux.org/packages/?sort=&q=%s&limit=50",
+    $alternative="https://packages.archlinux.org");
+
+// ImageMagic
+// magick-options is a webjump for imagemagick command line options.
+//
+// magick-options caches its completions in a preference. To clear the cache
+// and force magick-options to fetch the information anew, just do:
+//
+// clear_pref('conkeror.webjump.magick-options.cache');
+//
+// last modified: February 8, 2009
+//
+function magick_options_completer (input, cursor_position, conservative) {
+    function remove_duplicates_filter () {
+        var acc = {};
+        return function (x) {
+            if (acc[x]) return false;
+            acc[x] = 1;
+            return true;
+        };
+    }
+    var completions;
+    try {
+        completions = get_pref('conkeror.webjump.magick-options.cache').split(' ');
+    } catch (e) { }
+    if (! completions) {
+        try {
+            var content = yield send_http_request(
+                load_spec({uri: "http://imagemagick.org/script/command-line-options.php"}));
+            completions = content.responseText.match(/([a-z]+)(?=\">-\1<\/a>)/g).filter(remove_duplicates_filter());
+            user_pref('conkeror.webjump.magick-options.cache', completions.join(' '));
+        } catch (e) { }
+    }
+    yield co_return(
+        prefix_completer($completions = completions)
+        (input, cursor_position, conservative));
+}
+define_webjump("magick-options",
+    "http://imagemagick.org/script/command-line-options.php#%s",
+    $alternative = "http://imagemagick.org/script/command-line-options.php",
+    $completer = magick_options_completer);
+
+// define_webjump("arch/forums", "http://bbs.archlinux.org");
+// define_webjump("arch/wiki", "http://wiki.archlinux.org/index.php?search=%s");
+// define_webjump("arch/aur", "http://aur.archlinux.org/packages.php?O=0&K=%s");
+// define_webjump("arch/packages",
+//                "https://www.archlinux.org/packages/?sort=&q=%s&limit=50",
+//                $alternative="https://packages.archlinux.org");
+
+// Amazon
+define_webjump("amazon",
+    "http://www.amazon.com/s/ref=nb_sb_noss_2/180-3401592-0066356?url=search-alias%3Daps&field-keywords=%s");
+// StackOverflow
+define_webjump("stackoverflow","http://stackoverflow.com/search?q=%s",
+    $alternative="http://stackoverflow.com");
+// Bash FAQ
+define_webjump("bashfaq",
+    "http://mywiki.wooledge.org/BashFAQ?action=fullsearch&context=180&value=%s&fullsearch=Text",
+    $alternative = "http://mywiki.wooledge.org/BashFAQ");
+
+// CommandLineFu
+define_webjump("commandlinefu",
+    function(term) {
+        return 'http://www.commandlinefu.com/commands/matching/' +
+            term.replace(/[^a-zA-Z0-9_\-]/g, '')
+            .replace(/[\s\-]+/g, '-') +
+            '/' + btoa(term);
+    },
+    $alternative = "http://www.commandlinefu.com/");
+
+define_webjump("weatherundergroundHouston", "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=Houston,Texas");
+define_webjump("weatherunderground", "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=%s");
+define_webjump("weatherspark","http://weatherspark.com/#!graphs;q=%s", $alternative="http://weatherspark.com");
+define_webjump("weather", "http://www.weather.com/search/enhancedlocalsearch?where=%s");
+define_webjump("weatherHouston", "http://www.weather.com/search/enhancedlocalsearch?where=Houston");
+
+
+define_webjump("google-lucky","https://www.google.com/search?btnI=I%27m+Feeling+Lucky&q=%s");
+webjumps.g = webjumps.google;
+
+define_webjump("linux-questions","http://www.linuxquestions.org/questions/");
+define_webjump("gmane", "http://gmane.org/find.php?list=%s");
+define_webjump("hackernews", "http://searchyc.com/%s", $alternative = "http://news.ycombinator.com/");
+define_webjump("stackoverflow",  "http://stackoverflow.com/search?q=%s", $alternative = "http://stackoverflow.com/");
+define_webjump("superuser", "http://superuser.com/search?q=%s", $alternative = "http://superuser.com/");
+
+define_webjump("emacswiki",
+    "http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi"+
+    "&q=%s&sa=Search&siteurl=emacswiki.org%2F",
+    $alternative="http://www.emacswiki.org/"); // emacswiki
+
+define_webjump("marmalade", "http://marmalade-repo.org/packages?q=%s"); // emacs marmalade repo
+
+define_webjump("yandex", "http://yandex.com/yandsearch?text=%s"); // text
+define_webjump("yandex.ru", "https://yandex.ru/yandsearch?text=%s"); // text ru
+define_webjump("yimages", "http://images.yandex.com/yandsearch?text=%s"); // images
+define_webjump("yimagesru", "http://images.yandex.ru/yandsearch?text=%s"); // images ru
+define_webjump("ytrans", "http://translate.yandex.com/?lang=en-es&text=%s"); // translate en -> es
+
+define_webjump("kaldata",
+    "http://www.kaldata.com/forums/index.php?app=core&module=search&do=search&fromMainBar=1&search_term=%s");
+
+define_webjump("distrowatch", "http://distrowatch.com/table.php?distribution=%s");
+
+define_webjump("ddg", "http://duckduckgo.com/?q=%s");
+
+define_webjump("trans", "http://translate.google.com/translate_t#auto|en|%s");
+define_webjump("imagesgoogle", "http://www.google.com/images?q=%s", $alternative = "http://www.google.com/imghp");
+
+define_webjump("wordpress", "http://wordpress.org/search/%s");
+define_webjump("youtube", "http://www.youtube.com/results?search_query=%s&search=Search");
+define_webjump("deviantart", "http://browse.deviantart.com/?q=%s", $alternative="http://www.deviantart.com");
+define_webjump("flickr", "http://www.flickr.com/search/?q=%s", $alternative="http://www.flickr.com");
+
+define_webjump("github", "http://github.com/search?q=%s&type=Everything");
+define_webjump("savannah", "https://savannah.gnu.org/search/?words=%s&type_of_search=soft");
+define_webjump("gitorious", "http://gitorious.org/search?q=%s");
+
+require("page-modes/wikipedia.js");
+wikipedia_webjumps_format = "wp-%s"; // controls the names of the webjumps.  default is "wikipedia-%s".
+define_wikipedia_webjumps("en", "es", "bg"); // For English, Spain and Bulgarian.
+
+define_webjump("ebay", "http://search.ebay.es/search/search.dll?query=%s");
+
+define_webjump("lingvo", "http://www.lingvo-online.ru/en/Translate/en-es/%s");
+
+var unused_webjumps = ['answers', 'buildd','buildd-ports','clhs','cliki','clusty','creativecommons','debbugs','debfile','debpkg','debpopcon','debpts','debqa','freshmeat','kuro5hin','launchpad','lucky','ratpoisonwiki','sadelicious','scholar','sdelicious','slashdot','sourceforge','stumpwmwiki','ubuntubugs','ubuntufile','ubuntupkg','wiktionary','yahoo'];
+
+for (var i=0; i<unused_webjumps.length; i++) {
+    delete webjumps[unused_webjumps[i]];
+}
+
+key_bindings_ignore_capslock = true;
+
+undefine_key(content_buffer_normal_keymap, "up", "cmd_scrollLineUp");
+undefine_key(content_buffer_normal_keymap, "down", "cmd_scrollLineDown");
+undefine_key(content_buffer_normal_keymap, "left", "cmd_scrollLeft");
+undefine_key(content_buffer_normal_keymap, "right", "cmd_scrollRight");
+
+require('eye-guide.js');
+define_key(content_buffer_normal_keymap, "space", "eye-guide-scroll-down");
+define_key(content_buffer_normal_keymap, "back_space", "eye-guide-scroll-up");
+
+//session_pref("image.animation_mode", "none");
+
+interactive("enable-gif-animation",
+    "Enable gif animation",
+    function (I) {
+        session_pref("image.animation_mode", "normal");
+    });
+//define_key(default_global_keymap, "f6", "enable-gif-animation");
+
+// - source http://puntoblogspot.blogspot.com.es/2013/08/conkeror-go-to-buffer.html
+interactive("rgc-goto-buffer", "switches to buffer",
+    function rgc_switch_to_buffer(I){
+        var buff = yield I.minibuffer.read( $prompt = "number?:");
+        switch_to_buffer(I.window, I.window.buffers.get_buffer(buff-1));
+    }
+    );
+define_key(content_buffer_normal_keymap, "M-g M-g", "rgc-goto-buffer");
+
+add_hook("window_before_close_hook",
+         function () {
+             var w = get_recent_conkeror_window();
+             var result = (w == null) ||
+                 "y" == (yield w.minibuffer.read_single_character_option(
+                     $prompt = "Quit Conkeror? (y/n)",
+                     $options = ["y", "n"]));
+             yield co_return(result);
+         });
+
+///
+/// Auto-hide Minibuffer
+///
+
+var minibuffer_autohide_timer = null;
+var minibuffer_autohide_message_timeout = 3000; //milliseconds to show messages
+var minibuffer_mutually_exclusive_with_mode_line = true;
+
+function hide_minibuffer (window) {
+    window.minibuffer.element.collapsed = true;
+    if (minibuffer_mutually_exclusive_with_mode_line && window.mode_line)
+        window.mode_line.container.collapsed = false;
+}
+
+function show_minibuffer (window) {
+    window.minibuffer.element.collapsed = false;
+    if (minibuffer_mutually_exclusive_with_mode_line && window.mode_line)
+        window.mode_line.container.collapsed = true;
+}
+
+add_hook("window_initialize_hook", hide_minibuffer);
+// for_each_window(hide_minibuffer); // initialize existing windows
+
+
+var old_minibuffer_restore_state = (old_minibuffer_restore_state ||
+                                    minibuffer.prototype._restore_state);
+minibuffer.prototype._restore_state = function () {
+    if (minibuffer_autohide_timer) {
+        timer_cancel(minibuffer_autohide_timer);
+        minibuffer_autohide_timer = null;
+    }
+    if (this.current_state)
+        show_minibuffer(this.window);
+    else
+        hide_minibuffer(this.window);
+    old_minibuffer_restore_state.call(this);
+};
+
+var old_minibuffer_show = (old_minibuffer_show || minibuffer.prototype.show);
+minibuffer.prototype.show = function (str, force) {
+    var w = this.window;
+    show_minibuffer(w);
+    old_minibuffer_show.call(this, str, force);
+    if (minibuffer_autohide_timer)
+        timer_cancel(minibuffer_autohide_timer);
+    minibuffer_autohide_timer = call_after_timeout(
+        function () { hide_minibuffer(w); },
+        minibuffer_autohide_message_timeout);
+};
+
+var old_minibuffer_clear = (old_minibuffer_clear || minibuffer.prototype.clear);
+minibuffer.prototype.clear = function () {
+    if (minibuffer_autohide_timer) {
+        timer_cancel(minibuffer_autohide_timer);
+        minibuffer_autohide_timer = null;
+    }
+    if (! this.current_state)
+        hide_minibuffer(this.window);
+    old_minibuffer_clear.call(this);
+};
+// function history_clear () {
+//     var history = Cc["@mozilla.org/browser/nav-history-service;1"]
+//         .getService(Ci.nsIBrowserHistory);
+//     history.removeAllPages();
+// }
+
+// interactive("history-clear",
+//             "Clear the history.",
+//             history_clear);
+
+// interactive("radio", "Start hardcore-radio", "follow-new-buffer",
+//            $browser_object = "http://www.hardcoreradio.nl/player/");
+// define_key(content_buffer_normal_keymap, "f1 r", "radio");
+
+// interactive("to-radio-buffer", "Shortcut to the buffer that has radio",
+//             function (I) {
+//                 var buffers = I.window.buffers.buffer_list;
+//                 for (i in buffers) {
+//                     if (buffers[i].current_uri.spec.substr(0, 35) ==
+//                         'http://www.hardcoreradio.nl/player/') {
+//                         switch_to_buffer(I.window, buffers[i]);
+//                         return;
+//                     }
+//                 }
+//             });
+// define_key(content_buffer_normal_keymap, "C-x r", "to-radio-buffer");
+
+//source from https://github.com/technomancy/dotfiles/blob/master/.conkerorrc
+var user_agents = { "conkeror": "Mozilla/5.0 (X11; Linux x86_64; rv:8.0.1) " +
+                    "Gecko/20100101 conkeror/1.0pre",
+                    "chromium": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) " +
+                    "AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63" +
+                    "Safari/534.3",
+                    "firefox": "Mozilla/5.0 (X11; Linux x86_64; rv:8.0.1) " +
+                    "Gecko/20100101 Firefox/8.0.1",
+                    "android": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; " +
+                    "Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like " +
+                    "Gecko) Version/4.0 Mobile Safari/533.1" };
+
+var agent_completer = new prefix_completer($completions = Object.keys(user_agents));
+
+interactive("user-agent", "Pick a user agent from the list of presets",
+    function(I) {
+        var ua = (yield I.window.minibuffer.read(
+            $prompt = "Agent:",
+            $completer = agent_completer));
+        set_user_agent(user_agents[ua]);
+    });
+
+
+function dict_definition(I){
+    check_buffer(I.buffer, content_buffer);
+    let dict_url = 'http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query='+
+        encodeURIComponent(
+            yield I.minibuffer.read(
+                $prompt = "Dict: ",
+                $initial_value = I.buffer.top_frame.getSelection()));
+    browser_object_follow(I.buffer, OPEN_NEW_BUFFER, dict_url);
+    unfocus(I.window, I.buffer);
+}
+function dict_substring(I){
+    check_buffer(I.buffer, content_buffer);
+    let dict_url = 'http://www.dict.org/bin/Dict?Form=Dict2&Strategy=substring&Database=*&Query='+
+        encodeURIComponent(
+            yield I.minibuffer.read(
+                $prompt = "Dict (substring): ",
+                $initial_value = I.buffer.top_frame.getSelection()));
+    browser_object_follow(I.buffer, OPEN_NEW_BUFFER, dict_url);
+    unfocus(I.window, I.buffer);
+}
+function dict_Levenshtein(I){
+    check_buffer(I.buffer, content_buffer);
+    let dict_url = 'http://www.dict.org/bin/Dict?Form=Dict2&Strategy=lev&Database=*&Query='+
+        encodeURIComponent(
+            yield I.minibuffer.read(
+                $prompt = "Dict (Levenshtein): ",
+                $initial_value = I.buffer.top_frame.getSelection()));
+    browser_object_follow(I.buffer, OPEN_NEW_BUFFER, dict_url);
+    unfocus(I.window, I.buffer);
+}
+
+interactive("dict",
+    "Definitions of the word from dict.org in all supported dictionaries."
+    + "C-u triggers lookup for words with Levenshtein distance 1."
+    + "C-u C-u triggers lookup for words which contain the given word as a substring.",
+    alternates(dict_definition, dict_Levenshtein, dict_substring));
+
+define_key(default_global_keymap, "f5", "dict");
+
+var kill_buffer_original = kill_buffer_original || kill_buffer;
+
+var killed_buffer_urls = [];
+var killed_buffer_histories = [];
+
+//  remember_killed_buffer
+kill_buffer = function (buffer, force) {
+    var hist = buffer.web_navigation.sessionHistory;
+    if (buffer.display_uri_string && hist) {
+        killed_buffer_histories.push(hist);
+        killed_buffer_urls.push(buffer.display_uri_string);
+    }
+
+    kill_buffer_original(buffer,force);
+};
+
+interactive("revive-buffer",
+    "Loads url from a previously killed buffer",
+    function restore_killed_buffer (I) {
+        if (killed_buffer_urls.length !== 0) {
+            var url = yield I.minibuffer.read(
+                $prompt = "Restore killed url:",
+                $completer = new all_word_completer($completions = killed_buffer_urls),
+                $default_completion = killed_buffer_urls[killed_buffer_urls.length - 1],
+                $auto_complete = "url",
+                $auto_complete_initial = true,
+                $auto_complete_delay = 0,
+                $require_match = true);
+
+            var window = I.window;
+            var creator = buffer_creator(content_buffer);
+            var idx = killed_buffer_urls.indexOf(url);
+
+            // Create the buffer
+            var buf = creator(window, null);
+
+            // Recover the history
+            buf.web_navigation.sessionHistory = killed_buffer_histories[idx];
+
+            // This line may seem redundant, but it's necessary.
+            var original_index = buf.web_navigation.sessionHistory.index;
+            buf.web_navigation.gotoIndex(original_index);
+
+            // Focus the new tab
+            window.buffers.current = buf;
+
+            // Remove revived from cemitery
+            killed_buffer_urls.splice(idx,1);
+            killed_buffer_histories.splice(idx,1);
+        } else {
+            I.window.minibuffer.message("No killed buffer urls");
+        }
+    });
+
+
+define_key(default_global_keymap, "C-T", "revive-buffer");
+
+// Zenbrun colors
+// #dca3a3
+// #dca3a3
+// #7f9f7f
+// #f0dfaf
+// #dca3a3
+// #000d18
+// #bca3a3
+// #ffcfaf
+// #8f8f8f
+// #709080
+// #333333
+// #333333
+// #ecbcbc
+// #9fafaf
+// #80d4aa
+// #c3bf9f
+// #c0bed1
+// #93b3a3
+// #93b3a3
+// #efef8f
+// #efdcbc
+// #f8f893
+// #f0dfaf
+// #ffcfaf
+// #ffcfaf
+// #ffffff
+// #8cd0d3
+// #f0efd0
+// #2e3330
+// #a0afa0
+// #dfaf8f
+// #ffcfaf
+// #ffffff
+// #ffd7a7
+// #ffffe0
+// #9fafaf
+// #dca3a3
+// #82a282
+// #cfbfaf
+// #9ece9e
+// #e3ceab
+// #313633
+// #2e3330
+// #c3bf9f
+// #cc9393
+// #efefaf
+// #e89393
+// #efefef
+// #dfdfdf
+// #dfe4cf
+// #dfdfbf
+// #dcdccc
+// #2e3330
+// #333333
+// #ffffff
+// #cbecd0
+
+add_hook("before_quit_hook",
+         function () {
+             var w = get_recent_conkeror_window();
+             var result = (w == null) ||
+                 "y" == (yield w.minibuffer.read_single_character_option(
+                     $prompt = "Quit Conkeror? (y/n)",
+                     $options = ["y", "n"]));
+             yield co_return(result);
+         });
+
+require("hackernews")

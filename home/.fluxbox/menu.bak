@@ -1,0 +1,43 @@
+# -*-Mode:Conf-*-
+[begin] (fluxbox)
+#[include] (/etc/X11/fluxbox/fluxbox-menu)
+
+[submenu] (Perso) (Perso)
+#[exec] (Terminator) {/usr/bin/terminator}
+#[exec] (Mrxvt) {/usr/bin/mrxvt}
+[exec] (urxvt) {/usr/bin/urxvt}
+#[exec] (urxvtc) {/usr/bin/urxvtc}
+#[exec] (urxvtd) {/usr/bin/urxvtd}
+
+[separator]
+[exec] (Emacs server) {/usr/local/bin/emacs}
+[exec] (Emacs Client) {/usr/local/bin/emacsclient -c}
+
+[separator]
+[exec] (firefox) {/usr/bin/firefox}
+[exec] (Conkeror) {/usr/local/bin/conkeror}
+#[exec] (Chromium) {/usr/bin/chromium-browser}
+#[exec] (Dillo) {/usr/bin/dillo}
+#[exec] (DilloPlus) {/usr/local/bin/dplus}
+
+[separator]
+#   [exec] (DeadBeef) {/usr/local/bin/deadbeef}
+#   [exec] (VLC) {/usr/bin/vlc}
+[separator]
+#   [exec] (PAC - RDP) {/usr/bin/pac}
+   [exec] (Copyq) {/usr/bin/copyq}
+#   [exec] (compton) {/usr/bin/compton}
+   
+[end]
+
+[separator]
+[submenu](Arch)(Arch)
+[include] (/usr/share/fluxbox/menu)
+[end]
+[seaprator]
+[workspaces] (Workspaces)
+[reconfig] (Reconfigure)
+[restart] (Restart)
+[exit] (Exit)
+
+[end]

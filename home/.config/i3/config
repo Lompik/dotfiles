@@ -1,0 +1,408 @@
+# -*-eval: (rainbow-mode 1)-*-
+# i3 config file (v4)
+#
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+#
+# This config file uses keycodes (bindsym) and was written for the QWERTY
+# layout.
+#
+# To get a config file with the same key positions, but for your current
+# layout, use the i3-config-wizard
+
+# And last but not least we start fluxbox.
+# Because it is the last app you have to run it with ''exec'' before it.
+
+
+exec --no-startup-id /usr/bin/emacs 
+
+#terminator&
+exec --no-startup-id /home/lompik/.screenlayout/layout1.sh
+exec --no-startup-id xrdb -l /home/lompik/.Xdefaults
+exec --no-startup-id copyq
+#exec --no-startup-id urxvtd -q -f -o 
+exec --no-startup-id nvidia-settings --load-config-only
+exec --no-startup-id conkeror &
+exec --no-startup-id unclutter -idle 1 -root 
+exec --no-startup-id autocutsel -s CLIPBOARD 
+#autocutsel -s PRIMARY &
+exec --no-startup-id numlockx on 
+exec --no-startup-id mpd 
+#exec --no-startup-id conky -d 
+exec --no-startup-id mpc play 
+exec --no-startup-id xmodmap ~/.Xmodmap 
+exec --no-startup-id sleep 2
+#compton &
+#exec --no-startup-id i3-msg 'workspace Emacs;exec exec emacsclient -nc ;workspace 1'
+#exec --no-startup-id i3-msg 'workspace Term;exec urxvt;workspace 1'
+
+assign [class="Firefox"] Web
+assign [class="Conkeror"] Web
+assign [class="(?i)xfreerdp"] Laptop
+assign [class="(?i)chromium-browser"] Web
+assign [class="Gimp"] Gimp
+assign [class="Steam"] Steam
+for_window [class="URxvt"] border 1pixel
+for_window [class="Firefox"] border 1pixel
+for_window [class="Conkeror"] border 1pixel
+for_window [class="Emacs"] border 1pixel
+
+exec --no-startup-id exec feh --bg-scale /usr/share/backgrounds/warty-final-ubuntu.png 
+
+set $mod Mod4
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+# This font is widely installed, provides lots of unicode glyphs, right-to-left
+# text rendering and scalability on retina/hidpi displays (thanks to pango).
+#font pango:DejaVu Sans Mono 10
+font xft:Droid Sans Mono 14
+# Before i3 v4.8, we used to recommend this one as the default:
+# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+# The font above is very space-efficient, that is, it looks good, sharp and
+# clear in small sizes. However, its unicode glyph coverage is limited, the old
+# X core fonts rendering does not support right-to-left and this being a bitmap
+# font, it doesn’t scale on retina/hidpi displays.
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec exec urxvt
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# start dmenu (a program launcher)
+bindsym $mod+g exec dmenu_run -l 20 -fn "xft:Droid Sans:bold:pixelsize=20:antialias=true:hinting=slight" -nb "#0f0f0f" -nf "#a6a6a6" -sb "#032083" -sf "#FDAFFF"
+bindsym $mod+Shift+g exec j4-dmenu-desktop --dmenu='dmenu -i -l 20 -fn "xft:Droid Sans:bold:pixelsize=20:antialias=true:hinting=slight" -nb "#0f0f0f" -nf "#a6a6a6" -sb "#0f500f" -sf "#8f8fed"'
+bindsym --release Mod1+F5 exec xkill 
+# There also is the (new) i3-dmenu-desktop which only displays applications
+# shipping a .desktop file. It is a wrapper around dmenu, so you need that
+# installed.
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+# change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# change focus
+bindsym $mod+a focus left
+bindsym $mod+s focus down
+bindsym $mod+w focus up
+bindsym $mod+d focus right
+
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+a move left
+bindsym $mod+Shift+s move down
+bindsym $mod+Shift+w move up
+bindsym $mod+Shift+d move right
+
+# move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+#bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, toggle split)
+#bindsym $mod+s layout stacking
+#bindsym $mod+w layout tabbed
+#bindsym $mod+e layout toggle split
+bindsym $mod+t layout toggle all
+bindsym $mod+Shift+v layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+u focus parent
+
+# focus the child container
+bindsym $mod+Shift+u focus child
+
+# switch to workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+bindsym $mod+c  move absolute position center
+
+
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym Control+G mode "default"
+
+}
+
+bindsym $mod+r mode "resize"
+bindsym $mod+b exec python /home/lompik/.config/i3/winmenu.py 
+bindsym $mod+Shift+b border toggle 
+
+bindsym Mod3+Shift+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+
+#################################### # Scratchpad
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+
+
+################################# # Status bar 
+bindsym Mod3+r exec killall -SIGUSR1 conky
+
+bar {
+    id                bar-right
+    status_command    ~/.config/i3/bin/conky-wrapperRight
+    position          top
+    mode              hide
+    hidden_state      show
+    modifier          Mod5
+    Output            DVI-I-2
+    tray_output       none
+    workspace_buttons yes
+
+    
+    font xft:Ubuntu Mono, FreeMono, FontAwesome 17
+}
+
+bar {
+    id                bar-left
+    status_command    ~/.config/i3/bin/conky-wrapperLeft
+    position          top
+    mode              hide
+    hidden_state      show
+    modifier          Mod5
+    output            DVI-I-3
+    workspace_buttons yes
+    tray_output       DVI-I-3
+    
+    font xft:Ubuntu Mono, FontAwesome 17
+
+    colors {
+        background #000000
+        statusline #ffffff
+
+        focused_workspace  #ffffff #2855FF
+        active_workspace   #ffffff #333333
+        inactive_workspace #888888 #222222
+        urgent_workspace   #ffffff #900000
+    }
+}
+
+bindsym Pause bar hidden_state toggle bar-right
+bindsym Control+Pause bar mode toggle bar-right
+bindsym Scroll_Lock bar hidden_state toggle bar-left
+bindsym Control+Scroll_Lock bar mode toggle bar-left
+
+set $WS1 Web
+for_window [class="(?i)gajim"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [title="Preferences$"] floating enable
+for_window [class="Steam"] floating enable
+for_window [class="(?i)vmware"] floating enable
+for_window [class="(?i)vmplayer"] floating enable
+for_window [class="(?i)xfreerdp"] floating enable
+for_window [class="(?i)xfreerdp"] move absolute position 2560 px 720 px
+for_window [class="Gimp"] floating enable
+for_window [class="(?i)keepass"] floating enable
+for_window [class="Display.*"] floating enable
+#for_window [class="(?i)mplayer"] floating enable
+mouse_warping none 
+focus_follows_mouse no
+# class                 border  backgr. text    indicator
+#client.focused          #4c7899 #285577 #ffffff #2e9ef4
+#client.focused_inactive #333333 #5f676a #ffffff #484e50
+#client.unfocused        #333333 #222222 #888888 #292d2e
+#client.urgent           #2f343a #900000 #ffffff #900000
+#client.placeholder      #000000 #0c0c0c #ffffff #000000
+# class                 border  backgr. text    indicator
+client.focused          #0F4F40 #218F22 #ffffff #2FFFfF
+client.focused_inactive #333333 #5f676a #ffffff #484e50
+client.unfocused        #333333 #222222 #888888 #292d2e
+client.urgent           #2f343a #900000 #ffffff #900000
+#client.placeholder      #000000 #0c0c0c #ffffff #000000
+
+
+# bincode 512 exec blahalah                                           ----- bind keycode
+# for_window [class="Uzbl-core"] focus child, layout stacking, focus  ---- Force tab 
+
+
+bindsym XF86AudioPlay exec mpc toggle 
+bindsym XF86AudioNext exec mpc next 
+bindsym Control+XF86AudioNext exec mpc seek +1%
+bindsym XF86AudioPrev exec mpc prev  
+bindsym Control+XF86AudioPrev exec mpc seek -1%
+bindsym XF86AudioStop exec mpc stop 
+bindsym XF86AudioRaiseVolume exec mpc volume +5
+bindsym XF86AudioLowerVolume exec mpc volume -5
+
+workspace Emacs output DVI-I-3
+workspace Term output DVI-I-3
+
+workspace_auto_back_and_forth yes
+bindsym $mod+z workspace back_and_forth
+
+################################# # G710 Specific 
+#bindsym $mod+Shift+w [class="Conkeror"] focus
+# M1 XF86Tools   191
+bindcode 191 workspace Web
+bindcode $mod+191 move container to workspace Web
+# M2 XF86Launch5 192
+bindcode 192 workspace Emacs
+bindcode Mod1+192 exec exec emacsclient -c
+bindcode $mod+192 move container to workspace Emacs
+bindsym Mod3+l workspace Laptop
+bindsym $mod+Mod3+l move container to workspace Laptop
+
+# M3 XF86Launch6 193
+bindcode 193 workspace Term
+bindcode $mod+193 move container to workspace Term
+bindcode Control+193 workspace System
+bindcode Control+Shift+193 move container to workspace System
+# MR XF86Launch7 194
+bindcode 194 workspace News
+bindcode Control+194 workspace Steam
+
+# G1 XF86Launch8 195
+# G2 XF86Launch9 196
+
+# G3 197
+#bindcode 197 workspace News
+# G4 198 
+#bindcode 198 workspace News
+
+#bindsym $mod+x layout toggle
+
+# G6 XF86TouchpadOn 200
+bindsym XF86TouchpadOn workspace back_and_forth
+# G5 XF86TouchpadToggle 199
+bindsym XF86TouchpadToggle focus output left
+bindsym $mod+XF86TouchpadToggle move workspace to output left
+
+bindsym $mod+Shift+o [class="Emacs"] focus
+bindsym $mod+Shift+t [class="URxvt"] focus
+#bindsym Mod1+Print exec scrot -s -e 'mv $f /tmp/ && gimp /tmp/$f'
+bindsym --release Print exec scrot -s -m '%Y%m%d_%H%M%S_$wx$h.png' -e 'mv $f ~/Pictures/Scrot/'
+bindsym Mod1+Print exec scrot -u -m '%Y%m%d_%H%M%S_$wx$h.png' -e 'mv $f ~/Pictures/Scrot/'
+bindsym --release Control+Print exec scrot -m '%Y%m%d_%H%M%S_$wx$h.png' -e 'mv $f ~/Pictures/Scrot/'
+
+mode "focused" {
+
+                # hardcoded focus keybindings
+                bindsym b [class="(?i)Conkeror"] focus
+                bindsym w [class="(?i)terminal" title="weechat"] focus
+                #bindsym m [class="(?i)thunderbird"] focus
+                #bindsym f [class="(?i)terminal" title="mc"] focus
+                bindsym p [class="(?i)mupdf"] focus
+
+                # keybindings for marking and jumping to clients
+                bindsym a exec i3-input -F 'mark %s' -P 'Mark name: '
+                bindsym g exec i3-input -F '[con_mark=%s] focus' -P 'Go to mark: '
+
+                # Assign marks to keys 1-5
+                bindsym Shift+1 mark mark1
+                bindsym Shift+2 mark mark2
+                bindsym Shift+3 mark mark3
+                bindsym Shift+4 mark mark4
+                bindsym Shift+5 mark mark5
+
+                # Jump to clients marked 1-5
+                bindsym 1 [con_mark="mark1"] focus
+                bindsym 2 [con_mark="mark2"] focus
+                bindsym 3 [con_mark="mark3"] focus
+                bindsym 4 [con_mark="mark4"] focus
+                bindsym 5 [con_mark="mark5"] focus
+
+                # Exit to the default mode
+                bindsym Return mode "default"
+                bindsym Escape mode "default"
+                bindsym Control+G mode "default"
+}
+
+bindsym $mod+n mode "focused"
+
+#######################################################################
+# automatically start i3-config-wizard to offer the user to create a
+# keysym-based config which used his favorite modifier (alt or windows)
+#
+# i3-config-wizard will not launch if there already is a config file
+# in ~/.i3/config.
+#
+# Please remove the following exec line:
+#######################################################################
+#exec i3-config-wizard

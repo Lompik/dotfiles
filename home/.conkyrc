@@ -1,0 +1,279 @@
+# -*- mode: conf; eval: (rainbow-mode 1)-*-
+# set to yes if you want Conky to be forked in the background
+background yes
+
+cpu_avg_samples 2
+net_avg_samples 2
+
+out_to_console no
+
+# X font when Xft is disabled, you can pick one with program xfontsel
+#font 7x12
+#font 6x10
+font 7x13
+#font 8x13
+#font 7x12
+#font *mintsmild.se*
+#font -*-*-*-*-*-*-34-*-*-*-*-*-*-*
+#font -artwiz-snap-normal-r-normal-*-*-100-*-*-p-*-iso8859-1
+
+# Use Xft?
+use_xft yes
+
+# Xft font when Xft is enabled
+xftfont Ubuntu Mono:size=14:style=regular:antialias=true
+
+#own_window_transparent yes
+#own_window_colour 
+o#wn_window_type override
+#own_window_class conky
+#own_window yes
+
+# Create own window instead of using desktop (required in nautilus)
+own_window yes
+own_window_transparent yes
+own_window_type override
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_class Conky
+
+# Text alpha when using Xft
+xftalpha 0.7
+
+on_bottom yes
+
+# mail spool
+#mail_spool ~/Mail/StGmail/INBOX/new
+
+# Update interval in seconds
+update_interval 2
+
+# Create own window instead of using desktop (required in nautilus)
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# Minimum size of text area
+minimum_size 5 5
+#maximum_width 150
+
+# Draw shades?
+draw_shades no
+
+# Draw outlines?
+draw_outline no
+
+# Draw borders around text
+draw_borders no
+
+# Stippled borders?
+stippled_borders 0
+
+# border margins
+border_outer_margin 10
+
+# border width
+border_width 2
+
+# Default colors and also border colors
+default_color white
+default_shade_color white
+default_outline_color white
+
+# Text alignment, other possible values are commented
+alignment top_left
+#alignment top_right
+#alignment bottom_left
+#alignment bottom_right
+
+# Gap between borders of screen and text
+
+gap_x 20
+gap_y 20
+
+# Add spaces to keep things from moving about?  This only affects certain objects.
+use_spacer right
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+# boinc (seti) dir
+# seti_dir /opt/seti
+
+# Possible variables to be used:
+#
+#      Variable         Arguments                  Description
+#  acpiacadapter                     ACPI ac adapter state.
+#  acpifan                           ACPI fan state
+#  acpitemp                          ACPI temperature.
+#  adt746xcpu                        CPU temperature from therm_adt746x
+#  adt746xfan                        Fan speed from therm_adt746x
+#  battery           (num)           Remaining capasity in ACPI or APM
+#                                    battery. ACPI battery number can be
+#                                    given as argument (default is BAT0).
+#  buffers                           Amount of memory buffered
+#  cached                            Amount of memory cached
+#  color             (color)         Change drawing color to color
+#  cpu                               CPU usage in percents
+#  cpubar            (height)        Bar that shows CPU usage, height is
+#                                    bar's height in pixels
+#  downspeed         net             Download speed in kilobytes
+#  downspeedf        net             Download speed in kilobytes with one
+#                                    decimal
+#  exec              shell command   Executes a shell command and displays
+#                                    the output in torsmo. warning: this
+#                                    takes a lot more resources than other
+#                                    variables. I'd recommend coding wanted
+#                                    behaviour in C and posting a patch :-).
+#  execi             interval, shell Same as exec but with specific interval.
+#                    command         Interval can't be less than
+#                                    update_interval in configuration.
+#  fs_bar            (height), (fs)  Bar that shows how much space is used on
+#                                    a file system. height is the height in
+#                                    pixels. fs is any file on that file
+#                                    system.
+#  fs_free           (fs)            Free space on a file system available
+#                                    for users.
+#  fs_free_perc      (fs)            Free percentage of space on a file
+#                                    system available for users.
+#  fs_size           (fs)            File system size
+#  fs_used           (fs)            File system used space
+#  hr                (height)        Horizontal line, height is the height in
+#                                    pixels
+#  i2c               (dev), type, n  I2C sensor from sysfs (Linux 2.6). dev
+#                                    may be omitted if you have only one I2C
+#                                    device. type is either in (or vol)
+#                                    meaning voltage, fan meaning fan or temp
+#                                    meaning temperature. n is number of the
+#                                    sensor. See /sys/bus/i2c/devices/ on
+#                                    your local computer.
+#  kernel                            Kernel version
+#  loadavg           (1), (2), (3)   System load average, 1 is for past 1
+#                                    minute, 2 for past 5 minutes and 3 for
+#                                    past 15 minutes.
+#  machine                           Machine, i686 for example
+#  mails                             Mail count in mail spool. You can use
+#                                    program like fetchmail to get mails from
+#                                    some server using your favourite
+#                                    protocol. See also new_mails.
+#  mem                               Amount of memory in use
+#  membar            (height)        Bar that shows amount of memory in use
+#  memmax                            Total amount of memory
+#  memperc                           Percentage of memory in use
+#  new_mails                         Unread mail count in mail spool.
+#  nodename                          Hostname
+#  outlinecolor      (color)         Change outline color
+#  pre_exec          shell command   Executes a shell command one time before
+#                                    torsmo displays anything and puts output
+#                                    as text.
+#  processes                         Total processes (sleeping and running)
+#  running_processes                 Running processes (not sleeping),
+#                                    requires Linux 2.6
+#  shadecolor        (color)         Change shading color
+#  stippled_hr       (space),        Stippled (dashed) horizontal line
+#                    (height)
+#  swapbar           (height)        Bar that shows amount of swap in use
+#  swap                              Amount of swap in use
+#  swapmax                           Total amount of swap
+#  swapperc                          Percentage of swap in use
+#  sysname                           System name, Linux for example
+#  time              (format)        Local time, see man strftime to get more
+#                                    information about format
+#  totaldown         net             Total download, overflows at 4 GB on
+#                                    Linux with 32-bit arch and there doesn't
+#                                    seem to be a way to know how many times
+#                                    it has already done that before torsmo
+#                                    has started.
+#  totalup           net             Total upload, this one too, may overflow
+#  updates                           Number of updates (for debugging)
+#  upspeed           net             Upload speed in kilobytes
+#  upspeedf          net             Upload speed in kilobytes with one
+#                                    decimal
+#  uptime                            Uptime
+#  uptime_short                      Uptime in a shorter format
+#
+#  seti_prog                         Seti@home current progress
+#  seti_progbar      (height)        Seti@home current progress bar
+#  seti_credit                       Seti@hoome total user credit
+
+
+# variable is given either in format $variable or in ${variable}. Latter
+# allows characters right after the variable and must be used in network
+# stuff because of an argument
+#${font Dungeon:style=Bold:pixelsize=10}I can change the font as well
+#${font Verdana:size=10}as many times as I choose
+#${font Perry:size=10}Including UTF-8,
+#${font Ubuntu Mono:size=10}
+# stuff after 'TEXT' will be formatted on screen
+
+
+TEXT
+${color white}[${color red}$nodename${color white}] ${pre_exec lsb_release -dcs | tr '\n' ' '}${color #888888}${alignr}E.U: ${execi 3600 wget -q -O - "http://finance.yahoo.com/q?s=EURUSD=X" | grep -o "l10_eurusd=x.>[0-9\.]*</span>" | sed -e 's/l10_eurusd=x.>\([0-9\.]*\)<.span>/\1/' }
+${color #888888}$sysname $kernel${color #899784}|${uptime_short}${alignr}${color #CCCCCC}GMail:${execi 300  find ~/Mail/StGmail/INBOX/new -type f | wc -l}
+${color #00CF00}${time %b-%a-%d} ${color #00ff00}${time %T}${alignr}${color #998999}CDG ${tztime Europe/Paris %H:%M}${color #989999} RUN ${tztime Indian/Reunion %H:%M}
+${color white}${hr 2}
+${color #ffccaa}Monitors-
+${color #888888}cpu: ${color #CCCCCC}${cpu}%${alignr} ${color #888888}cpuT: ${color #CCCCCC}${hwmon 1 temp 1} °C
+${color #888888}${cpugraph 25 ff0000 ff00ff -l}
+${color #888888}ram : ${color #CCCCCC}$mem${color #888888}/${color #CCCCCC}$memmax ${color #888888}- ${color #CCCCCC}$memperc%
+${color #888888}${memgraph 10 888888 ff00ff -l}
+${color #888888}swap: ${color #CCCCCC}$swap  ${color #888888}load: ( ${color #CCCCCC}$loadavg ${color #888888}) #${color #888888}/${color #CCCCCC}$swapmax ${color #888888}   - ${color #CCCCCC}$swapperc%
+
+${color #888888}processes: ${color #CCCCCC}$processes	${color #888888}Running: ${color #CCCCCC}$running_processes
+
+${color #ffccaa}Net:${color #BBBBBB}eno1-
+${color #888888}DOWN: ${color #CCCCCC}${downspeed eno1} k/s	    ${color #888888}UP: ${color #CCCCCC}${upspeed eno1} k/s
+${color #888888}${downspeedgraph eno1 12,100 ff0000 0000ff}	           ${color #888888}${upspeedgraph eno1 12,100 0000ff ff0000}
+${color #888888}TOTAL: ${color #CCCCCC}${totaldown eno1}	        ${color #888888}TOTAL: ${color #CCCCCC}${totalup eno1}
+
+${color #ffccaa}Espace libre-
+${color #888888}root   ${color #CCCCCC}${fs_used /}${color #888888}/${color #CCCCCC}${fs_size /} ${color #888888}(${color #CCCCCC}${fs_free /} ${fs_free_perc /}% ${color #888888} free)
+       ${fs_bar /}
+${color #888888}/mnt/C ${color #CCCCCC}${fs_used /mnt/C}${color #888888}/${color #CCCCCC}${fs_size /mnt/C} ${color #888888}(${color #CCCCCC}${fs_free /mnt/C} ${fs_free_perc /mnt/C}% ${color #888888} free)
+       ${fs_bar /mnt/C}
+${color #888888}/mnt/E ${color #CCCCCC}${fs_used /mnt/E}${color #888888}/${color #CCCCCC}${fs_size /mnt/E} ${color #888888}(${color #CCCCCC}${fs_free /mnt/E} ${fs_free_perc /mnt/E}% ${color #888888} free)
+       ${fs_bar /mnt/E}
+sdd ${hr 1}
+${diskiograph_read sdd 16, 130 AAAAAA BBBBBF} R:${diskio_read sdd}${alignr}W:${diskio_write sdd}${diskiograph_write sdd 16, 130 AAAAAA BBBBBF -t}
+/mnt/E ${hr 1}
+${diskiograph_read sdb 16, 130 AAAAAA BBBBBF -t} R:${diskio_read sdb}${alignr}W:${diskio_write sdb}${diskiograph_write sdb 16, 130 AAAAAA BBBBBF -t}
+${color #ffccaa}Occupation du Processeur.
+${color #CCCCCC}Nombre            PID     CPU%   MEM%
+${color #ddaa00} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color #888888} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color #888888} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+${color #888888} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+${color #888888} ${top name 5} ${top pid 5} ${top cpu 5} ${top mem 5}
+${color #ffccaa}Occupation de la Memoire.
+${color #CCCCCC}Nombre            PID     MEM%   CPU%
+${color #ddaa00} ${top_mem name 1} ${top_mem pid 1} ${top_mem mem 1} ${top_mem cpu 1}
+${color #888888} ${top_mem name 2} ${top_mem pid 2} ${top_mem mem 2} ${top_mem cpu 2}
+${color #888888} ${top_mem name 3} ${top_mem pid 3} ${top_mem mem 3} ${top_mem cpu 3}
+${color #888888} ${top_mem name 4} ${top_mem pid 4} ${top_mem mem 4} ${top_mem cpu 4}
+${color #888888} ${top_mem name 5} ${top_mem pid 5} ${top_mem mem 5} ${top_mem cpu 5}
+${color #888888}${font Arial:style=Bold}GRAPHICS ${hr 2}$font
+${color #888888}${execi 1000 lspci | grep VGA | awk '{print $8,$9,$10,$11}' | cut -f2 -d"[" | cut -f1 -d"]"} : ${alignr}${color #CCCCCC}${execi 60 nvidia-settings -query '[gpu:0]/GPUCurrentProcessorClockFreqs' | perl -ne 'print $1 if /GPUCurrentProcessorClockFreqs.*?: (\d+)./;'}${color #BBBBBB} Mhz
+${color #888888}Memory: ${alignr}${color #CCCCCC} ${execi 60 nvidia-settings -query '[gpu:0]/GPUMemoryInterface' | perl -ne 'print $1 if /GPUMemoryInterface.*?: (\d+)./;'}${color #BBBBBB} Mhz
+${color #888888}Memory: ${alignr}${color #CCCCCC} ${execi 60 nvidia-settings -query '[gpu:0]/UsedDedicatedGPUMemory' | perl -ne 'print $1 if /UsedDedicatedGPUMemory.*?: (\d+)./;'}${color #BBBBBB} MB
+${color #888888}Temp: ${alignr}${color #CCCCCC}${execi 60 nvidia-settings -query '[gpu:0]/GPUCoreTemp' | perl -ne 'print $1 if /GPUCoreTemp.*?: (\d+)./;'}${color #BBBBBB} °C
+${color #888888}Fan Speed: ${alignr}${color #CCCCCC}${execi 5 nvidia-settings -q [fan:0]/GPUCurrentFanSpeed -t}${color #BBBBBB} %
+#${if_running deadbeef}
+#${color #888888}${font Arial:style=Bold}Now Playing ${hr 2}$font
+#${execi 10 deadbeef --nowplaying "%a"| cut -b 1-15} - ${execi 30 deadbeef --nowplaying "%b" | cut -b 1-15} - ${color #BBBBBB}${font Droid Sans:bold}${execi 30 deadbeef --nowplaying "%y"}
+#${font Droid Sans:bold}${execi 30 deadbeef --nowplaying "%t"}$font
+#${font Droid Sans}${execi 10 deadbeef --nowplaying "%e"}${offset 2}/${offset 2}${execi 10 deadbeef --nowplaying "%l"}
+# ${endif}
+#${if_running deadbeef}
+#${color #888888}${font Arial:style=Bold}Now Playing ${hr 2}$font
+#${execi 10 mpc -f "%artist%" current| cut -b 1-15} - ${execi 30 mpc -f "%album%" current | cut -b 1-15} - ${color #BBBBBB}${font Droid Sans:bold}${execi 30 mpc -f "%date%" current}
+#${font Droid Sans:bold}${execi 30 mpc -f "%title%" current}$font
+#${font Droid Sans}${execi 10 mpc | head -n 2 | tail -n 1 | awk {'print $3'}}
+# ${endif}
+${if_mpd_playing}${color #888888}$mpd_status - Vol:$mpd_vol% ${hr}
+${color #CCCCCC}${mpd_artist 15}${color #888888} - ${mpd_album 30}
+${color #888888}${mpd_title 25}
+${color #888888}$mpd_elapsed/$mpd_length  ${mpd_bar 5,180}$endif
+${color #888888}${font Arial:style=Bold}Dmesg ${hr 2}$font
+${execi 60 dmesg | tail -5 | sed 's/^.\{15\}//'| cut -b 1-45}

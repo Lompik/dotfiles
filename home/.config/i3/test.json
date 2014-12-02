@@ -1,0 +1,16 @@
+// -*-eval: (rainbow-mode 1);-*-
+
+
+//Conky Left
+
+[{"full_text": "CDG ${tztime Europe/Paris %T}", ,"color": "\#9989F9"},
+{"full_text": "RUN ${tztime Indian/Reunion %T}","color": "\#A98989"},
+{"full_text": " 🖴 / ${fs_free /} C:${fs_free /mnt/C} E:${fs_free /mnt/E} ","color": "\#AACCAA"}
+${if_up ham0}{"full_text": " ≈ eth0:${addrs eth0} ","color":"\#33CC99"},$endif
+#{"full_text": " ❤ $acpitemp°C [$cpu%] ","color": "\#DC322F"},
+#{"full_text": " ≣ $mem ", "color":"\#B58900"},
+#{"full_text": "🎮 ${execi 60 nvidia-settings -query '[gpu:0]/GPUCurrentProcessorClockFreqs' | perl -ne 'print $1 if /GPUCurrentProcessorClockFreqs.*?: (\d+)./;'}Mhz [${execi 60 nvidia-settings -query '[gpu:0]/GPUCoreTemp' | perl -ne 'print $1 if /GPUCoreTemp.*?: (\d+)./;'}°C] ${execi 5 nvidia-settings -q [fan:0]/GPUCurrentFanSpeed -t}% ", "color":"\#84A3FF"},
+#${if_up eth0}{"full_text": " ≈ eth0 ↓${downspeed eth0} ↑${upspeed eth0}","color":"\#33CC99","min_width" : "  eth0 9999MBS 9999MBS"},$endif
+#{"full_text": " ♪ [$mpd_vol%] ", "color":"\#268BD2"},
+#{"full_text": " ${time %a %d %b} ${time %H:%M} ","color":"\#00ff00"}
+]

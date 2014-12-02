@@ -1,0 +1,19 @@
+# -*-eval: (rainbow-mode 1);-*-
+background no
+out_to_console yes
+out_to_x no
+update_interval 120
+total_run_times 0
+short_units yes
+pad_percents 3
+override_utf8_locale yes
+TEXT
+,[{"full_text": " € ${execi 3600 wget -q -O - "http://finance.yahoo.com/q?s=EURUSD=X" | grep -o "l10_eurusd=x.>[0-9\.]*</span>" | sed -e 's/l10_eurusd=x.>\([0-9\.]*\)<.span>/\1/' } ","color": "\#AAAAAA"},
+{"full_text": " 📧 ${execi 300  find ~/Mail/StGmail/INBOX/new -type f | wc -l} ","color": "\#AACCAA"},
+  {"full_text": "CDG ${tztime Europe/Paris %H:%M}","color": "\#9989F9"},
+  {"full_text": "RUN ${tztime Indian/Reunion %H:%M}","color": "\#A98989"},
+  {"full_text": " ✇ / ${fs_free /} [C ${fs_free /mnt/C}] [E ${fs_free /mnt/E}] ","color": "\#AACCAA"},
+${if_up ham0}{"full_text": " ≈ ham0:${addrs ham0} ","color":"\#33CC99"},$endif
+${if_up eno1}{"full_text": " ≈ eno1:${addrs eno1} ","color":"\#33CC99"},$endif
+{"full_text": "${kernel}","color": "\#88A989"}
+]
